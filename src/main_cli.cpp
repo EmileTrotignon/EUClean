@@ -9,68 +9,62 @@
 #include <vector>
 using namespace std;
 
-string Percent_Removed(int lines_removed, int savelength){
-	float pcnt =  ((float)lines_removed/(float)savelength)*100;
-	ostringstream sp;
-	sp << pcnt;
-	string p = sp.str();
-	p = p.substr(0,5);
-	return p;
+#include "eu_clean_logic.h"
+#include "CleanConfig.h"
+
+void print_instructions(const CleanConfig &clean_config) {
+    cout << "\nverbose mode is currently: ";
+    if (clean_config.verbose) { cout << "on"; }
+    else { cout << "off"; }
+    if (clean_config.clean_invalid_tags || clean_config.clean_wars || clean_config.clean_province_history ||
+        clean_config.clean_decisions || clean_config.clean_advisors ||
+        clean_config.clean_buildings || clean_config.clean_occupations ||
+        clean_config.clean_province_history2 || clean_config.clean_rulers || clean_config.clean_heirs ||
+        clean_config.clean_leaders) {
+        cout << "\n\nwill be cleaned:";
+    }
+    if (clean_config.clean_invalid_tags) cout << "\n\t1 - Invalid Tags";
+    if (clean_config.clean_wars) cout << "\n\t2 - Concluded Wars";
+    if (clean_config.clean_province_history) cout << "\n\t3 - Province History";
+    if (clean_config.clean_decisions) cout << "\n\t4 - Decision History";
+    if (clean_config.clean_advisors) cout << "\n\t5 - Advisor History";
+    if (clean_config.clean_buildings) cout << "\n\t6 - Building History";
+    if (clean_config.clean_occupations) cout << "\n\t7 - Occupation History";
+    if (clean_config.clean_province_history2) cout << "\n\t8 - Province History #2";
+    if (clean_config.clean_rulers) cout << "\n\t9 - Ruler History";
+    if (clean_config.clean_heirs) cout << "\n\t10 - Heir/Consort History";
+    if (clean_config.clean_leaders) cout << "\n\t11 - Leader History";
+    if (!clean_config.clean_invalid_tags || !clean_config.clean_wars || !clean_config.clean_province_history ||
+        !clean_config.clean_decisions || !clean_config.clean_advisors ||
+        !clean_config.clean_buildings || !clean_config.clean_occupations ||
+        !clean_config.clean_province_history2 || !clean_config.clean_rulers || !clean_config.clean_heirs ||
+        !clean_config.clean_leaders) {
+        cout << "\nwill NOT be cleaned:";
+    }
+    if (!clean_config.clean_invalid_tags) cout << "\n\t1 - Invalid Tags";
+    if (!clean_config.clean_wars) cout << "\n\t2 - Concluded Wars";
+    if (!clean_config.clean_province_history) cout << "\n\t3 - Province History";
+    if (!clean_config.clean_decisions) cout << "\n\t4 - Decision History";
+    if (!clean_config.clean_advisors) cout << "\n\t5 - Advisor History";
+    if (!clean_config.clean_buildings) cout << "\n\t6 - Building History";
+    if (!clean_config.clean_occupations) cout << "\n\t7 - Occupation History";
+    if (!clean_config.clean_province_history2) cout << "\n\t8 - Province History #2";
+    if (!clean_config.clean_rulers) cout << "\n\t9 - Ruler History";
+    if (!clean_config.clean_heirs) cout << "\n\t10 - Heir/Consort History";
+    if (!clean_config.clean_leaders) cout << "\n\t11 - Leader History";
+    cout << "\n\nType a number and press Enter to toggle cleaning on/off.";
+    cout << "\nType 'v' to toggle verbose mode on/off.";
+    cout << "\nType 'd' to repeat the descriptions.";
+    cout << "\nType 'a' and press Enter to clean \"autosave.eu4\"";
+    cout << "\nType any other uncompressed EU4 savefile name and press Enter to clean it.";
+    cout << "\n\n";
 }
 
-void Scan_IDs(vector<string> &savelines, set<string> &valid, string target){
-	for(vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i) {
-		string line = *i;
-		if(line == target){
-			i++;
-			line = *i;
-			string id = line.substr(6);
-			if(valid.find(id) == valid.end()) {valid.insert(id);}
-		}
-	}
-}
-
-void Strip_Deceased(vector<string> &savelines, set<string> &valid, string target, int &removed, int &lines_removed){
-	vector<string> purged_save;
-	for(vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i) {
-		string line = *i;
-		if(line == target){
-			int j = 0;
-			bool strip = false;
-			while(1){
-				i++; j++;
-				string _l = *i;
-				if(_l.substr(0,9) == "\t\t\t\t\t\tid="){
-					string id = _l.substr(9);
-					if(valid.find(id) == valid.end()) {strip = true;}
-					break;
-				}
-			}
-			i -= j;
-			if(strip){
-				removed++;
-				string prev_line = purged_save.back();
-				while(1){
-					lines_removed++;
-					i++;
-					string _l = *i;
-					if(_l == "\t\t\t\t}"){
-						lines_removed++;
-						break;
-					}
-				}
-				i++;
-				line = *i;
-				if(prev_line.substr(0,3) == "\t\t\t" && isdigit(prev_line[3]) && line == "\t\t\t}") {
-					purged_save.pop_back();
-					lines_removed += 2;
-					continue;
-				}
-				i--;
-				continue;
-			}
-		}
-		purged_save.push_back(line);
-	}
-	savelines = purged_save;
+int main() {
+    CleanConfig clean_cfg("EU Clean.cfg");
+    string input;
+    print_instructions(clean_cfg);
+    cin >> input;
+    while (!clean(input, clean_cfg)) cin >> input;
+    return 0;
 }

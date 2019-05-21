@@ -5,10 +5,15 @@
 #ifndef EUCLEAN_CLEANCONFIG_H
 #define EUCLEAN_CLEANCONFIG_H
 
+#include <iostream>
+
+using namespace std;
 
 class CleanConfig {
 public:
     CleanConfig();
+
+    explicit CleanConfig(const string &cfg_loc);
 
     bool use_defaults = false;    //for ultra-fast testing purposes
     bool verbose = false;
@@ -23,6 +28,8 @@ public:
     bool clean_rulers = false;
     bool clean_heirs = true;
     bool clean_leaders = true;
+
+    void save_config(const string &cfg_loc);
 };
 
 

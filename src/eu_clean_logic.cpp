@@ -84,6 +84,163 @@ Strip_Deceased(vector<string> &savelines, set<string> &valid, const string &targ
     savelines = purged_save;
 }
 
+bool handle_user_input(CleanConfig &clean_config, string &msg, string &d, string &outfileloc, vector<string> &savelines,
+                       const string &input) {
+
+    if (!msg.empty()) { cout << msg << "\n\n"; }
+    cout << ">";
+    msg = "";
+    if (input == "1") {
+        if (clean_config.clean_invalid_tags) {
+            clean_config.clean_invalid_tags = false;
+            msg = "Disabling";
+        } else {
+            clean_config.clean_invalid_tags = true;
+            msg = "Enabling";
+        }
+        msg += " cleanup of invalid tags";
+    } else if (input == "2") {
+        if (clean_config.clean_wars) {
+            clean_config.clean_wars = false;
+            msg = "Disabling";
+        } else {
+            clean_config.clean_wars = true;
+            msg = "Enabling";
+        }
+        msg += " cleanup of concluded wars";
+    } else if (input == "3") {
+        if (clean_config.clean_province_history) {
+            clean_config.clean_province_history = false;
+            msg = "Disabling";
+        } else {
+            clean_config.clean_province_history = true;
+            msg = "Enabling";
+        }
+        msg += " cleanup of province history";
+    } else if (input == "4") {
+        if (clean_config.clean_decisions) {
+            clean_config.clean_decisions = false;
+            msg = "Disabling";
+        } else {
+            clean_config.clean_decisions = true;
+            msg = "Enabling";
+        }
+        msg += " cleanup of decision history";
+    } else if (input == "5") {
+        if (clean_config.clean_advisors) {
+            clean_config.clean_advisors = false;
+            msg = "Disabling";
+        } else {
+            clean_config.clean_advisors = true;
+            msg = "Enabling";
+        }
+        msg += " cleanup of advisor history";
+    } else if (input == "6") {
+        if (clean_config.clean_buildings) {
+            clean_config.clean_buildings = false;
+            msg = "Disabling";
+        } else {
+            clean_config.clean_buildings = true;
+            msg = "Enabling";
+        }
+        msg += " cleanup of building history";
+    } else if (input == "7") {
+        if (clean_config.clean_occupations) {
+            clean_config.clean_occupations = false;
+            msg = "Disabling";
+        } else {
+            clean_config.clean_occupations = true;
+            msg = "Enabling";
+        }
+        msg += " cleanup of occupation history";
+    } else if (input == "8") {
+        if (clean_config.clean_province_history2) {
+            clean_config.clean_province_history2 = false;
+            msg = "Disabling";
+        } else {
+            clean_config.clean_province_history2 = true;
+            msg = "Enabling";
+        }
+        msg += " cleanup of province history #2";
+    } else if (input == "9") {
+        if (clean_config.clean_rulers) {
+            clean_config.clean_rulers = false;
+            msg = "Disabling";
+        } else {
+            clean_config.clean_rulers = true;
+            msg = "Enabling";
+        }
+        msg += " cleanup of ruler history";
+    } else if (input == "10") {
+        if (clean_config.clean_heirs) {
+            clean_config.clean_heirs = false;
+            msg = "Disabling";
+        } else {
+            clean_config.clean_heirs = true;
+            msg = "Enabling";
+        }
+        msg += " cleanup of heir/consort history";
+    } else if (input == "11") {
+        if (clean_config.clean_leaders) {
+            clean_config.clean_leaders = false;
+            msg = "Disabling";
+        } else {
+            clean_config.clean_leaders = true;
+            msg = "Enabling";
+        }
+        msg += " cleanup of leader history";
+    } else if (input == "v") {
+        if (clean_config.verbose) {
+            clean_config.verbose = false;
+            msg = "Disabling";
+        } else {
+            clean_config.verbose = true;
+            msg = "Enabling";
+        }
+        msg += " verbose output";
+    } else if (input == "d") {
+        msg = d;
+    } else if (!(clean_config.clean_invalid_tags || clean_config.clean_wars ||
+                 clean_config.clean_province_history || clean_config.clean_decisions ||
+                 clean_config.clean_advisors || clean_config.clean_buildings ||
+                 clean_config.clean_occupations || clean_config.clean_province_history2 ||
+                 clean_config.clean_rulers || clean_config.clean_heirs || clean_config.clean_leaders)) {
+        msg = "Error: no cleanup options selected.";
+    } else {
+        string base_file;
+        string infileloc;
+        if (input == "a") { infileloc = "autosave.eu4"; }
+        else { infileloc = input; }
+        if (infileloc.substr(infileloc.length() - 4) == ".eu4") {
+            base_file = infileloc.substr(0, infileloc.length() - 4);
+        } else {
+            base_file = infileloc;
+            infileloc += ".eu4";
+        }
+        outfileloc = base_file + "_cleaned.eu4";
+        ifstream infile(infileloc.c_str());
+        if (infile) {
+            cout << "file file file : " << savelines.size() << endl;
+
+            cout << "Importing savefile: " << infileloc << endl;
+            string s;
+            while (!infile.eof()) {
+                getline(infile, s);
+                savelines.push_back(s);
+                //cout << "file file file : " << savelines.size() << endl;
+            }
+            infile.close();
+            cout << "Imported " << savelines.size() << " lines." << endl;
+
+            return true;
+        } else {
+            msg = "Error: unable to open file: " + infileloc;
+            cout << "Unable to open file wtf" << endl;
+        }
+    }
+    return false;
+}
+
 void clean_invalid_tags(vector<string> &savelines, CleanConfig clean_config, int &lines_removed_1, int &lines_removed_2,
                         int &lines_removed_3, int &references_removed_1) {
     cout << "Checking provinces for valid tags.\n";
@@ -277,7 +434,7 @@ void clean_province_history(vector<string> &savelines, int &lines_removed_5) {
         purged_save.push_back(line);
     }
     savelines = purged_save;
-    cout << removed << " deleted\n";
+    cout << removed << " deleted" << endl;
 }
 
 void clean_province_history2(vector<string> &savelines, int &lines_removed_10) {
@@ -317,12 +474,13 @@ void clean_province_history2(vector<string> &savelines, int &lines_removed_10) {
         purged_save.push_back(line);
     }
     savelines = purged_save;
-    cout << removed << " deleted\n";
+    cout << removed << " deleted" << endl;
 }
 
 void clean_decisions(vector<string> &savelines, int &lines_removed_6) {
     cout << "Removing decision spam records: ";
     int removed = 0;
+    cout << savelines[0] << endl;
     int current_year = atoi(((savelines.at(1)).substr(5, 9)).c_str());
     vector<string> purged_save;
     vector<string> to_strip;
@@ -397,7 +555,7 @@ void clean_decisions(vector<string> &savelines, int &lines_removed_6) {
         purged_save.push_back(line);
     }
     savelines = purged_save;
-    cout << removed << " deleted\n";
+    cout << removed << " deleted" << endl;
 }
 
 void clean_buildings(vector<string> &savelines, int &lines_removed_8) {
@@ -601,7 +759,7 @@ void clean_buildings(vector<string> &savelines, int &lines_removed_8) {
         purged_save.push_back(line);
     }
     savelines = purged_save;
-    cout << removed << " deleted\n";
+    cout << removed << " deleted" << endl;
 }
 
 void clean_occupations(vector<string> &savelines, int &lines_removed_9) {
@@ -670,7 +828,7 @@ void clean_occupations(vector<string> &savelines, int &lines_removed_9) {
         purged_save.push_back(line);
     }
     savelines = purged_save;
-    cout << removed << " deleted\n";
+    cout << removed << " deleted" << endl;
 }
 
 void clean_rulers(vector<string> &savelines, int &lines_removed_11) {
@@ -697,10 +855,62 @@ void clean_rulers(vector<string> &savelines, int &lines_removed_11) {
         }
         savelines = purged_save;
     }
-    cout << removed << " deleted\n";
+    cout << removed << " deleted" << endl;
 }
 
-void clean(const string &input, CleanConfig clean_config) {
+void clean_heirs(vector<string> &savelines, int &lines_removed_12) {
+    cout << "Scanning for active heirs: ";
+    set<string> valid_heirs;
+    Scan_IDs(savelines, valid_heirs, "\t\their={");
+    cout << valid_heirs.size() << " found\n";
+
+    cout << "Purging deceased heirs: ";
+    int removed = 0;
+    Strip_Deceased(savelines, valid_heirs, "\t\t\t\their={", removed, lines_removed_12);
+    cout << removed << " deleted" << endl;
+
+    cout << "Scanning for active consorts: ";
+    set<string> valid_consorts;
+    Scan_IDs(savelines, valid_consorts, "\t\tqueen={");
+    cout << valid_consorts.size() << " found\n";
+
+    cout << "Purging deceased consorts: ";
+    removed = 0;
+    Strip_Deceased(savelines, valid_consorts, "\t\t\t\tqueen={", removed, lines_removed_12);
+    cout << removed << " deleted" << endl;
+}
+
+void clean_advisors(vector<string> &savelines, int &lines_removed_7) {
+    cout << "Scanning for active advisors: ";
+    set<string> valid_advisors;
+    Scan_IDs(savelines, valid_advisors, "\t\tadvisor={");
+    cout << valid_advisors.size() << " found\n";
+
+    cout << "Purging deceased advisors: ";
+    int removed = 0;
+    Strip_Deceased(savelines, valid_advisors, "\t\t\t\tadvisor={", removed, lines_removed_7);
+    cout << removed << " deleted" << endl;
+}
+
+void clean_leaders(vector<string> &savelines, int &lines_removed_13) {
+    cout << "Scanning for active leaders: ";
+    set<string> valid_leaders;
+    Scan_IDs(savelines, valid_leaders, "\t\tleader={");
+    cout << valid_leaders.size() << " found\n";
+
+    cout << "Purging deceased leaders: ";
+    int removed = 0;
+    Strip_Deceased(savelines, valid_leaders, "\t\t\t\tleader={", removed, lines_removed_13);
+    cout << removed << " deleted" << endl;
+}
+
+/**
+ *
+ * @param input
+ * @param clean_config
+ * @return true if a save was cleaned, false if just the config was changed
+ */
+bool clean(const string &input, CleanConfig &clean_config) {
 
     string outfileloc;
     vector<string> savelines;
@@ -763,338 +973,76 @@ void clean(const string &input, CleanConfig clean_config) {
         d += "\n\tremoves records of deceased generals & admirals";
         d += "\n\n";
         cout << d;
-        ifstream cfg("EU Clean.cfg");
-        if (cfg) {
-            string s;
-            vector<string> cfglines;
-            while (getline(cfg, s)) { cfglines.push_back(s); }
-            cfg.close();
-            if (cfglines.size() == 12) {
-                if (cfglines[0] != "0") { clean_config.verbose = true; }
-                if (cfglines[1] == "0") { clean_config.clean_invalid_tags = false; }
-                if (cfglines[2] != "0") { clean_config.clean_wars = true; }
-                if (cfglines[3] == "0") { clean_config.clean_province_history = false; }
-                if (cfglines[4] == "0") { clean_config.clean_decisions = false; }
-                if (cfglines[5] == "0") { clean_config.clean_advisors = false; }
-                if (cfglines[6] == "0") { clean_config.clean_buildings = false; }
-                if (cfglines[7] == "0") { clean_config.clean_occupations = false; }
-                if (cfglines[8] == "0") { clean_config.clean_province_history2 = false; }
-                if (cfglines[9] != "0") { clean_config.clean_rulers = true; }
-                if (cfglines[10] == "0") { clean_config.clean_heirs = false; }
-                if (cfglines[11] == "0") { clean_config.clean_leaders = false; }
-            } else { cout << "\nwarning: ignoring corrupted configuration file \"EU Clean.cfg\""; }
-        }
+
 
         string msg;
-        while (true) {
-            cout << "\nverbose mode is currently: ";
-            if (clean_config.verbose) { cout << "on"; }
-            else { cout << "off"; }
-            if (clean_config.clean_invalid_tags || clean_config.clean_wars || clean_config.clean_province_history ||
-                clean_config.clean_decisions || clean_config.clean_advisors ||
-                clean_config.clean_buildings || clean_config.clean_occupations ||
-                clean_config.clean_province_history2 || clean_config.clean_rulers || clean_config.clean_heirs ||
-                clean_config.clean_leaders) {
-                cout << "\n\nwill be cleaned:";
-            }
-            if (clean_config.clean_invalid_tags) cout << "\n\t1 - Invalid Tags";
-            if (clean_config.clean_wars) cout << "\n\t2 - Concluded Wars";
-            if (clean_config.clean_province_history) cout << "\n\t3 - Province History";
-            if (clean_config.clean_decisions) cout << "\n\t4 - Decision History";
-            if (clean_config.clean_advisors) cout << "\n\t5 - Advisor History";
-            if (clean_config.clean_buildings) cout << "\n\t6 - Building History";
-            if (clean_config.clean_occupations) cout << "\n\t7 - Occupation History";
-            if (clean_config.clean_province_history2) cout << "\n\t8 - Province History #2";
-            if (clean_config.clean_rulers) cout << "\n\t9 - Ruler History";
-            if (clean_config.clean_heirs) cout << "\n\t10 - Heir/Consort History";
-            if (clean_config.clean_leaders) cout << "\n\t11 - Leader History";
-            if (!clean_config.clean_invalid_tags || !clean_config.clean_wars || !clean_config.clean_province_history ||
-                !clean_config.clean_decisions || !clean_config.clean_advisors ||
-                !clean_config.clean_buildings || !clean_config.clean_occupations ||
-                !clean_config.clean_province_history2 || !clean_config.clean_rulers || !clean_config.clean_heirs ||
-                !clean_config.clean_leaders) {
-                cout << "\nwill NOT be cleaned:";
-            }
-            if (!clean_config.clean_invalid_tags) cout << "\n\t1 - Invalid Tags";
-            if (!clean_config.clean_wars) cout << "\n\t2 - Concluded Wars";
-            if (!clean_config.clean_province_history) cout << "\n\t3 - Province History";
-            if (!clean_config.clean_decisions) cout << "\n\t4 - Decision History";
-            if (!clean_config.clean_advisors) cout << "\n\t5 - Advisor History";
-            if (!clean_config.clean_buildings) cout << "\n\t6 - Building History";
-            if (!clean_config.clean_occupations) cout << "\n\t7 - Occupation History";
-            if (!clean_config.clean_province_history2) cout << "\n\t8 - Province History #2";
-            if (!clean_config.clean_rulers) cout << "\n\t9 - Ruler History";
-            if (!clean_config.clean_heirs) cout << "\n\t10 - Heir/Consort History";
-            if (!clean_config.clean_leaders) cout << "\n\t11 - Leader History";
-            cout << "\n\nType a number and press Enter to toggle cleaning on/off.";
-            cout << "\nType 'v' to toggle verbose mode on/off.";
-            cout << "\nType 'd' to repeat the descriptions.";
-            cout << "\nType 'a' and press Enter to clean \"autosave.eu4\"";
-            cout << "\nType any other uncompressed EU4 savefile name and press Enter to clean it.";
-            cout << "\n\n";
-            if (!msg.empty()) { cout << msg << "\n\n"; }
-            cout << ">";
-            msg = "";
-            if (input == "1") {
-                if (clean_config.clean_invalid_tags) {
-                    clean_config.clean_invalid_tags = false;
-                    msg = "Disabling";
-                } else {
-                    clean_config.clean_invalid_tags = true;
-                    msg = "Enabling";
-                }
-                msg += " cleanup of invalid tags";
-            } else if (input == "2") {
-                if (clean_config.clean_wars) {
-                    clean_config.clean_wars = false;
-                    msg = "Disabling";
-                } else {
-                    clean_config.clean_wars = true;
-                    msg = "Enabling";
-                }
-                msg += " cleanup of concluded wars";
-            } else if (input == "3") {
-                if (clean_config.clean_province_history) {
-                    clean_config.clean_province_history = false;
-                    msg = "Disabling";
-                } else {
-                    clean_config.clean_province_history = true;
-                    msg = "Enabling";
-                }
-                msg += " cleanup of province history";
-            } else if (input == "4") {
-                if (clean_config.clean_decisions) {
-                    clean_config.clean_decisions = false;
-                    msg = "Disabling";
-                } else {
-                    clean_config.clean_decisions = true;
-                    msg = "Enabling";
-                }
-                msg += " cleanup of decision history";
-            } else if (input == "5") {
-                if (clean_config.clean_advisors) {
-                    clean_config.clean_advisors = false;
-                    msg = "Disabling";
-                } else {
-                    clean_config.clean_advisors = true;
-                    msg = "Enabling";
-                }
-                msg += " cleanup of advisor history";
-            } else if (input == "6") {
-                if (clean_config.clean_buildings) {
-                    clean_config.clean_buildings = false;
-                    msg = "Disabling";
-                } else {
-                    clean_config.clean_buildings = true;
-                    msg = "Enabling";
-                }
-                msg += " cleanup of building history";
-            } else if (input == "7") {
-                if (clean_config.clean_occupations) {
-                    clean_config.clean_occupations = false;
-                    msg = "Disabling";
-                } else {
-                    clean_config.clean_occupations = true;
-                    msg = "Enabling";
-                }
-                msg += " cleanup of occupation history";
-            } else if (input == "8") {
-                if (clean_config.clean_province_history2) {
-                    clean_config.clean_province_history2 = false;
-                    msg = "Disabling";
-                } else {
-                    clean_config.clean_province_history2 = true;
-                    msg = "Enabling";
-                }
-                msg += " cleanup of province history #2";
-            } else if (input == "9") {
-                if (clean_config.clean_rulers) {
-                    clean_config.clean_rulers = false;
-                    msg = "Disabling";
-                } else {
-                    clean_config.clean_rulers = true;
-                    msg = "Enabling";
-                }
-                msg += " cleanup of ruler history";
-            } else if (input == "10") {
-                if (clean_config.clean_heirs) {
-                    clean_config.clean_heirs = false;
-                    msg = "Disabling";
-                } else {
-                    clean_config.clean_heirs = true;
-                    msg = "Enabling";
-                }
-                msg += " cleanup of heir/consort history";
-            } else if (input == "11") {
-                if (clean_config.clean_leaders) {
-                    clean_config.clean_leaders = false;
-                    msg = "Disabling";
-                } else {
-                    clean_config.clean_leaders = true;
-                    msg = "Enabling";
-                }
-                msg += " cleanup of leader history";
-            } else if (input == "v") {
-                if (clean_config.verbose) {
-                    clean_config.verbose = false;
-                    msg = "Disabling";
-                } else {
-                    clean_config.verbose = true;
-                    msg = "Enabling";
-                }
-                msg += " verbose output";
-            } else if (input == "d") {
-                msg = d;
-            } else if (!(clean_config.clean_invalid_tags || clean_config.clean_wars ||
-                         clean_config.clean_province_history || clean_config.clean_decisions ||
-                         clean_config.clean_advisors || clean_config.clean_buildings ||
-                         clean_config.clean_occupations || clean_config.clean_province_history2 ||
-                         clean_config.clean_rulers || clean_config.clean_heirs || clean_config.clean_leaders)) {
-                msg = "Error: no cleanup options selected.";
-            } else {
-                string base_file;
-                string infileloc;
-                if (input == "a") { infileloc = "autosave.eu4"; }
-                else { infileloc = input; }
-                if (infileloc.substr(infileloc.length() - 4) == ".eu4") {
-                    base_file = infileloc.substr(0, infileloc.length() - 4);
-                } else {
-                    base_file = infileloc;
-                    infileloc += ".eu4";
-                }
-                outfileloc = base_file + "_cleaned.eu4";
-                ifstream infile(infileloc.c_str());
-                if (infile) {
-                    cout << "Importing savefile: " << infileloc << "\n";
-                    string s;
-                    while (getline(infile, s)) { savelines.push_back(s); }
-                    infile.close();
-                    break;
-                } else { msg = "Error: unable to open file: " + infileloc; }
-            }
+        if (!handle_user_input(clean_config, msg, d, outfileloc, savelines, input)) {
+            return false;
         }
 
-        ofstream _c("EU Clean.cfg");
-        if (clean_config.verbose) { _c << "1"; } else { _c << "0"; }
-        _c << "\n";
-        if (clean_config.clean_invalid_tags) { _c << "1"; } else { _c << "0"; }
-        _c << "\n";
-        if (clean_config.clean_wars) { _c << "1"; } else { _c << "0"; }
-        _c << "\n";
-        if (clean_config.clean_province_history) { _c << "1"; } else { _c << "0"; }
-        _c << "\n";
-        if (clean_config.clean_decisions) { _c << "1"; } else { _c << "0"; }
-        _c << "\n";
-        if (clean_config.clean_advisors) { _c << "1"; } else { _c << "0"; }
-        _c << "\n";
-        if (clean_config.clean_buildings) { _c << "1"; } else { _c << "0"; }
-        _c << "\n";
-        if (clean_config.clean_occupations) { _c << "1"; } else { _c << "0"; }
-        _c << "\n";
-        if (clean_config.clean_province_history2) { _c << "1"; } else { _c << "0"; }
-        _c << "\n";
-        if (clean_config.clean_rulers) { _c << "1"; } else { _c << "0"; }
-        _c << "\n";
-        if (clean_config.clean_heirs) { _c << "1"; } else { _c << "0"; }
-        _c << "\n";
-        if (clean_config.clean_leaders) { _c << "1"; } else { _c << "0"; }
-        _c << "\n";
-        _c.close();
+        clean_config.save_config("EU Clean.cfg");
     }
 
-    int lines_removed_1 = 0;
-    int lines_removed_2 = 0;
-    int lines_removed_3 = 0;
-    int lines_removed_4 = 0;
-    int lines_removed_5 = 0;
-    int lines_removed_6 = 0;
-    int lines_removed_7 = 0;
-    int lines_removed_8 = 0;
-    int lines_removed_9 = 0;
-    int lines_removed_10 = 0;
-    int lines_removed_11 = 0;
-    int lines_removed_12 = 0;
-    int lines_removed_13 = 0;
+    int lines_removed_country_def = 0;
+    int lines_removed_trade_demands = 0;
+    int lines_removed_country_switches = 0;
+    int lines_removed_concluded_war_h = 0;
+    int lines_removed_province_history = 0;
+    int lines_removed_decisions = 0;
+    int lines_removed_advisors = 0;
+    int lines_removed_buildings = 0;
+    int lines_removed_occupations = 0;
+    int lines_removed_province_history2 = 0;
+    int lines_removed_rulers = 0;
+    int lines_removed_heirs = 0;
+    int lines_removed_leaders = 0;
     int references_removed_1 = 0;
     int savelength = savelines.size();
 
     if (clean_config.clean_invalid_tags) {
-        clean_invalid_tags(savelines, clean_config, lines_removed_1, lines_removed_2, lines_removed_3,
+        clean_invalid_tags(savelines, clean_config, lines_removed_country_def, lines_removed_trade_demands,
+                           lines_removed_country_switches,
                            references_removed_1);
     }
 
     if (clean_config.clean_wars) {
-        clean_wars(savelines, lines_removed_4);
+        clean_wars(savelines, lines_removed_concluded_war_h);
     }
 
     if (clean_config.clean_province_history) {
-        clean_province_history(savelines, lines_removed_5);
+        clean_province_history(savelines, lines_removed_province_history);
     }
 
     if (clean_config.clean_province_history2) {
-        clean_province_history2(savelines, lines_removed_10);
+        clean_province_history2(savelines, lines_removed_province_history2);
     }
 
     if (clean_config.clean_decisions) {
-        clean_decisions(savelines, lines_removed_6);
+        clean_decisions(savelines, lines_removed_decisions);
     }
 
     if (clean_config.clean_buildings) {
-        clean_buildings(savelines, lines_removed_8);
+        clean_buildings(savelines, lines_removed_buildings);
     }
 
     if (clean_config.clean_occupations) {
-        clean_occupations(savelines, lines_removed_9);
+        clean_occupations(savelines, lines_removed_occupations);
     }
 
     if (clean_config.clean_rulers) {
-
+        clean_rulers(savelines, lines_removed_rulers);
     }
 
     if (clean_config.clean_heirs) {
-        cout << "Scanning for active heirs: ";
-        set<string> valid_heirs;
-        Scan_IDs(savelines, valid_heirs, "\t\their={");
-        cout << valid_heirs.size() << " found\n";
-
-        cout << "Purging deceased heirs: ";
-        int removed = 0;
-        Strip_Deceased(savelines, valid_heirs, "\t\t\t\their={", removed, lines_removed_12);
-        cout << removed << " deleted\n";
-
-        cout << "Scanning for active consorts: ";
-        set<string> valid_consorts;
-        Scan_IDs(savelines, valid_consorts, "\t\tqueen={");
-        cout << valid_consorts.size() << " found\n";
-
-        cout << "Purging deceased consorts: ";
-        removed = 0;
-        Strip_Deceased(savelines, valid_consorts, "\t\t\t\tqueen={", removed, lines_removed_12);
-        cout << removed << " deleted\n";
+        clean_heirs(savelines, lines_removed_heirs);
     }
 
     if (clean_config.clean_advisors) {
-        cout << "Scanning for active advisors: ";
-        set<string> valid_advisors;
-        Scan_IDs(savelines, valid_advisors, "\t\tadvisor={");
-        cout << valid_advisors.size() << " found\n";
-
-        cout << "Purging deceased advisors: ";
-        int removed = 0;
-        Strip_Deceased(savelines, valid_advisors, "\t\t\t\tadvisor={", removed, lines_removed_7);
-        cout << removed << " deleted\n";
+        clean_advisors(savelines, lines_removed_advisors);
     }
 
     if (clean_config.clean_leaders) {
-        cout << "Scanning for active leaders: ";
-        set<string> valid_leaders;
-        Scan_IDs(savelines, valid_leaders, "\t\tleader={");
-        cout << valid_leaders.size() << " found\n";
-
-        cout << "Purging deceased leaders: ";
-        int removed = 0;
-        Strip_Deceased(savelines, valid_leaders, "\t\t\t\tleader={", removed, lines_removed_13);
-        cout << removed << " deleted\n";
+        clean_leaders(savelines, lines_removed_leaders);
     }
 
     cout << "Removed:\n";
@@ -1102,68 +1050,72 @@ void clean(const string &input, CleanConfig clean_config) {
         cout << "\t" << references_removed_1 << "\treferences within province discovery\n";
     }
     if (clean_config.clean_invalid_tags) {
-        cout << "\t" << lines_removed_1 << "\t(" << Percent_Removed(lines_removed_1, savelength)
+        cout << "\t" << lines_removed_country_def << "\t(" << Percent_Removed(lines_removed_country_def, savelength)
              << "%) lines of country definition/history\n";
-        cout << "\t" << lines_removed_2 << "\t(" << Percent_Removed(lines_removed_2, savelength)
+        cout << "\t" << lines_removed_trade_demands << "\t(" << Percent_Removed(lines_removed_trade_demands, savelength)
              << "%) lines of unnecessary trade demands\n";
-        cout << "\t" << lines_removed_3 << "\t(" << Percent_Removed(lines_removed_3, savelength)
+        cout << "\t" << lines_removed_country_switches << "\t("
+             << Percent_Removed(lines_removed_country_switches, savelength)
              << "%) lines of irrelevant country switches\n";
     }
     if (clean_config.clean_wars) {
-        cout << "\t" << lines_removed_4 << "\t(" << Percent_Removed(lines_removed_4, savelength)
+        cout << "\t" << lines_removed_concluded_war_h << "\t("
+             << Percent_Removed(lines_removed_concluded_war_h, savelength)
              << "%) lines of concluded war history\n";
     }
     if (clean_config.clean_province_history) {
-        cout << "\t" << lines_removed_5 << "\t(" << Percent_Removed(lines_removed_5, savelength)
-             << "%) lines of redundant province history\n";
+        cout << "\t" << lines_removed_province_history << "\t("
+             << Percent_Removed(lines_removed_province_history, savelength)
+             << "%) lines of redundant province history" << endl;
     }
     if (clean_config.clean_province_history2) {
-        cout << "\t" << lines_removed_10 << "\t(" << Percent_Removed(lines_removed_10, savelength)
+        cout << "\t" << lines_removed_province_history2 << "\t("
+             << Percent_Removed(lines_removed_province_history2, savelength)
              << "%) lines of additional province history\n";
     }
     if (clean_config.clean_occupations) {
-        cout << "\t" << lines_removed_9 << "\t(" << Percent_Removed(lines_removed_9, savelength)
+        cout << "\t" << lines_removed_occupations << "\t(" << Percent_Removed(lines_removed_occupations, savelength)
              << "%) lines of occupation history\n";
     }
     if (clean_config.clean_buildings) {
-        cout << "\t" << lines_removed_8 << "\t(" << Percent_Removed(lines_removed_8, savelength)
+        cout << "\t" << lines_removed_buildings << "\t(" << Percent_Removed(lines_removed_buildings, savelength)
              << "%) lines of building history\n";
     }
     if (clean_config.clean_decisions) {
-        cout << "\t" << lines_removed_6 << "\t(" << Percent_Removed(lines_removed_6, savelength)
+        cout << "\t" << lines_removed_decisions << "\t(" << Percent_Removed(lines_removed_decisions, savelength)
              << "%) lines of decision spam history\n";
     }
     if (clean_config.clean_rulers) {
-        cout << "\t" << lines_removed_11 << "\t(" << Percent_Removed(lines_removed_11, savelength)
+        cout << "\t" << lines_removed_rulers << "\t(" << Percent_Removed(lines_removed_rulers, savelength)
              << "%) lines of dead ruler records\n";
     }
     if (clean_config.clean_heirs) {
-        cout << "\t" << lines_removed_12 << "\t(" << Percent_Removed(lines_removed_12, savelength)
+        cout << "\t" << lines_removed_heirs << "\t(" << Percent_Removed(lines_removed_heirs, savelength)
              << "%) lines of dead heir/consort records\n";
     }
     if (clean_config.clean_advisors) {
-        cout << "\t" << lines_removed_7 << "\t(" << Percent_Removed(lines_removed_7, savelength)
+        cout << "\t" << lines_removed_advisors << "\t(" << Percent_Removed(lines_removed_advisors, savelength)
              << "%) lines of dead advisor records\n";
     }
     if (clean_config.clean_leaders) {
-        cout << "\t" << lines_removed_13 << "\t(" << Percent_Removed(lines_removed_13, savelength)
+        cout << "\t" << lines_removed_leaders << "\t(" << Percent_Removed(lines_removed_leaders, savelength)
              << "%) lines of dead leader records\n";
     }
 
     int total = 0;
-    total += lines_removed_1;
-    total += lines_removed_2;
-    total += lines_removed_3;
-    total += lines_removed_4;
-    total += lines_removed_5;
-    total += lines_removed_6;
-    total += lines_removed_7;
-    total += lines_removed_8;
-    total += lines_removed_9;
-    total += lines_removed_10;
-    total += lines_removed_11;
-    total += lines_removed_12;
-    total += lines_removed_13;
+    total += lines_removed_country_def;
+    total += lines_removed_trade_demands;
+    total += lines_removed_country_switches;
+    total += lines_removed_concluded_war_h;
+    total += lines_removed_province_history;
+    total += lines_removed_decisions;
+    total += lines_removed_advisors;
+    total += lines_removed_buildings;
+    total += lines_removed_occupations;
+    total += lines_removed_province_history2;
+    total += lines_removed_rulers;
+    total += lines_removed_heirs;
+    total += lines_removed_leaders;
     cout << "\t--------------------------------------------\n";
     cout << "\t" << total << "\t(" << Percent_Removed(total, savelength) << "%) total lines removed\n";
 
@@ -1176,6 +1128,8 @@ void clean(const string &input, CleanConfig clean_config) {
     cout << "\n\nPress Enter to continue.";
     cin.sync();
     cin.get();
+    return true;
 }
+
 
 

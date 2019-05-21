@@ -7,4 +7,6 @@
 
 #include "CleanConfig.h"
 
+bool clean(const string &input, CleanConfig &clean_config);
+
 #endif //EUCLEAN_EU_CLEAN_LOGIC_H
