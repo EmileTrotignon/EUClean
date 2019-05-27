@@ -1,7 +1,3 @@
-//
-// Created by emile on 20/05/19.
-//
-
 #include "eu_clean_logic.h"
 
 #include <algorithm>

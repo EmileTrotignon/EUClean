@@ -1,7 +1,3 @@
-//
-// Created by Emile on 20/05/2019.
-//
-
 #ifndef EUCLEAN_CLEANCONFIG_H
 #define EUCLEAN_CLEANCONFIG_H
 

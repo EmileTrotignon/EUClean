@@ -1,7 +1,3 @@
-//
-// Created by emile on 24/05/19.
-//
-
 #ifndef EUCLEAN_QFILESELECT_H
 #define EUCLEAN_QFILESELECT_H
 

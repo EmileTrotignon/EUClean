@@ -1,7 +1,3 @@
-//
-// Created by emile on 26/05/19.
-//
-
 #include <fstream>
 #include "EuCleanCentralWidget.h"
 

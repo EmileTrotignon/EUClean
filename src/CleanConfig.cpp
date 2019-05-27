@@ -1,7 +1,3 @@
-//
-// Created by Emile on 20/05/2019.
-//
-
 #include <vector>
 #include <fstream>
 #include "CleanConfig.h"

@@ -1,7 +1,3 @@
-//
-// Created by emile on 24/05/19.
-//
-
 #include "QFileSelect.h"
 
 

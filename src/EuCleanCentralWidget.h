@@ -1,7 +1,3 @@
-//
-// Created by emile on 26/05/19.
-//
-
 #ifndef EUCLEAN_EUCLEANCENTRALWIDGET_H
 #define EUCLEAN_EUCLEANCENTRALWIDGET_H
 
