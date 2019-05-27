@@ -16,7 +16,8 @@
 
 using namespace std;
 
-string Percent_Removed(int lines_removed, int savelength) {
+string Percent_Removed(int lines_removed, int savelength)
+{
     float pcnt = ((float) lines_removed / (float) savelength) * 100;
     ostringstream sp;
     sp << pcnt;
@@ -25,52 +26,66 @@ string Percent_Removed(int lines_removed, int savelength) {
     return p;
 }
 
-void Scan_IDs(vector<string> &savelines, set<string> &valid, const string &target) {
-    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i) {
+void Scan_IDs(vector<string> &savelines, set<string> &valid, const string &target)
+{
+    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i)
+    {
         string line = *i;
-        if (line == target) {
+        if (line == target)
+        {
             i++;
             line = *i;
             string id = line.substr(6);
-            if (valid.find(id) == valid.end()) { valid.insert(id); }
+            if (valid.find(id) == valid.end())
+            { valid.insert(id); }
         }
     }
 }
 
 void
-Strip_Deceased(vector<string> &savelines, set<string> &valid, const string &target, int &removed, int &lines_removed) {
+Strip_Deceased(vector<string> &savelines, set<string> &valid, const string &target, int &removed, int &lines_removed)
+{
     vector<string> purged_save;
-    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i) {
+    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i)
+    {
         string line = *i;
-        if (line == target) {
+        if (line == target)
+        {
             int j = 0;
             bool strip = false;
-            while (true) {
+            while (true)
+            {
                 i++;
                 j++;
                 string _l = *i;
-                if (_l.substr(0, 9) == "\t\t\t\t\t\tid=") {
+                if (_l.substr(0, 9) == "\t\t\t\t\t\tid=")
+                {
                     string id = _l.substr(9);
-                    if (valid.find(id) == valid.end()) { strip = true; }
+                    if (valid.find(id) == valid.end())
+                    { strip = true; }
                     break;
                 }
             }
             i -= j;
-            if (strip) {
+            if (strip)
+            {
                 removed++;
                 string prev_line = purged_save.back();
-                while (true) {
+                while (true)
+                {
                     lines_removed++;
                     i++;
                     string _l = *i;
-                    if (_l == "\t\t\t\t}") {
+                    if (_l == "\t\t\t\t}")
+                    {
                         lines_removed++;
                         break;
                     }
                 }
                 i++;
                 line = *i;
-                if (prev_line.substr(0, 3) == "\t\t\t" && isdigit(prev_line[3]) && line == "\t\t\t}") {
+                if (prev_line.substr(0, 3) == "\t\t\t" && isdigit(prev_line[3]) && line == "\t\t\t}")
+                {
                     purged_save.pop_back();
                     lines_removed += 2;
                     continue;
@@ -85,146 +100,193 @@ Strip_Deceased(vector<string> &savelines, set<string> &valid, const string &targ
 }
 
 bool handle_user_input(CleanConfig &clean_config, string &msg, string &d, string &outfileloc, vector<string> &savelines,
-                       const string &input) {
+                       const string &input)
+{
 
-    if (!msg.empty()) { cout << msg << "\n\n"; }
+    if (!msg.empty())
+    { cout << msg << "\n\n"; }
     cout << ">";
     msg = "";
-    if (input == "1") {
-        if (clean_config.clean_invalid_tags) {
+    if (input == "1")
+    {
+        if (clean_config.clean_invalid_tags)
+        {
             clean_config.clean_invalid_tags = false;
             msg = "Disabling";
-        } else {
+        } else
+        {
             clean_config.clean_invalid_tags = true;
             msg = "Enabling";
         }
         msg += " cleanup of invalid tags";
-    } else if (input == "2") {
-        if (clean_config.clean_wars) {
+    } else if (input == "2")
+    {
+        if (clean_config.clean_wars)
+        {
             clean_config.clean_wars = false;
             msg = "Disabling";
-        } else {
+        } else
+        {
             clean_config.clean_wars = true;
             msg = "Enabling";
         }
         msg += " cleanup of concluded wars";
-    } else if (input == "3") {
-        if (clean_config.clean_province_history) {
+    } else if (input == "3")
+    {
+        if (clean_config.clean_province_history)
+        {
             clean_config.clean_province_history = false;
             msg = "Disabling";
-        } else {
+        } else
+        {
             clean_config.clean_province_history = true;
             msg = "Enabling";
         }
         msg += " cleanup of province history";
-    } else if (input == "4") {
-        if (clean_config.clean_decisions) {
+    } else if (input == "4")
+    {
+        if (clean_config.clean_decisions)
+        {
             clean_config.clean_decisions = false;
             msg = "Disabling";
-        } else {
+        } else
+        {
             clean_config.clean_decisions = true;
             msg = "Enabling";
         }
         msg += " cleanup of decision history";
-    } else if (input == "5") {
-        if (clean_config.clean_advisors) {
+    } else if (input == "5")
+    {
+        if (clean_config.clean_advisors)
+        {
             clean_config.clean_advisors = false;
             msg = "Disabling";
-        } else {
+        } else
+        {
             clean_config.clean_advisors = true;
             msg = "Enabling";
         }
         msg += " cleanup of advisor history";
-    } else if (input == "6") {
-        if (clean_config.clean_buildings) {
+    } else if (input == "6")
+    {
+        if (clean_config.clean_buildings)
+        {
             clean_config.clean_buildings = false;
             msg = "Disabling";
-        } else {
+        } else
+        {
             clean_config.clean_buildings = true;
             msg = "Enabling";
         }
         msg += " cleanup of building history";
-    } else if (input == "7") {
-        if (clean_config.clean_occupations) {
+    } else if (input == "7")
+    {
+        if (clean_config.clean_occupations)
+        {
             clean_config.clean_occupations = false;
             msg = "Disabling";
-        } else {
+        } else
+        {
             clean_config.clean_occupations = true;
             msg = "Enabling";
         }
         msg += " cleanup of occupation history";
-    } else if (input == "8") {
-        if (clean_config.clean_province_history2) {
+    } else if (input == "8")
+    {
+        if (clean_config.clean_province_history2)
+        {
             clean_config.clean_province_history2 = false;
             msg = "Disabling";
-        } else {
+        } else
+        {
             clean_config.clean_province_history2 = true;
             msg = "Enabling";
         }
         msg += " cleanup of province history #2";
-    } else if (input == "9") {
-        if (clean_config.clean_rulers) {
+    } else if (input == "9")
+    {
+        if (clean_config.clean_rulers)
+        {
             clean_config.clean_rulers = false;
             msg = "Disabling";
-        } else {
+        } else
+        {
             clean_config.clean_rulers = true;
             msg = "Enabling";
         }
         msg += " cleanup of ruler history";
-    } else if (input == "10") {
-        if (clean_config.clean_heirs) {
+    } else if (input == "10")
+    {
+        if (clean_config.clean_heirs)
+        {
             clean_config.clean_heirs = false;
             msg = "Disabling";
-        } else {
+        } else
+        {
             clean_config.clean_heirs = true;
             msg = "Enabling";
         }
         msg += " cleanup of heir/consort history";
-    } else if (input == "11") {
-        if (clean_config.clean_leaders) {
+    } else if (input == "11")
+    {
+        if (clean_config.clean_leaders)
+        {
             clean_config.clean_leaders = false;
             msg = "Disabling";
-        } else {
+        } else
+        {
             clean_config.clean_leaders = true;
             msg = "Enabling";
         }
         msg += " cleanup of leader history";
-    } else if (input == "v") {
-        if (clean_config.verbose) {
+    } else if (input == "v")
+    {
+        if (clean_config.verbose)
+        {
             clean_config.verbose = false;
             msg = "Disabling";
-        } else {
+        } else
+        {
             clean_config.verbose = true;
             msg = "Enabling";
         }
         msg += " verbose output";
-    } else if (input == "d") {
+    } else if (input == "d")
+    {
         msg = d;
     } else if (!(clean_config.clean_invalid_tags || clean_config.clean_wars ||
                  clean_config.clean_province_history || clean_config.clean_decisions ||
                  clean_config.clean_advisors || clean_config.clean_buildings ||
                  clean_config.clean_occupations || clean_config.clean_province_history2 ||
-                 clean_config.clean_rulers || clean_config.clean_heirs || clean_config.clean_leaders)) {
+                 clean_config.clean_rulers || clean_config.clean_heirs || clean_config.clean_leaders))
+    {
         msg = "Error: no cleanup options selected.";
-    } else {
+    } else
+    {
         string base_file;
         string infileloc;
-        if (input == "a") { infileloc = "autosave.eu4"; }
-        else { infileloc = input; }
-        if (infileloc.substr(infileloc.length() - 4) == ".eu4") {
+        if (input == "a")
+        { infileloc = "autosave.eu4"; }
+        else
+        { infileloc = input; }
+        if (infileloc.substr(infileloc.length() - 4) == ".eu4")
+        {
             base_file = infileloc.substr(0, infileloc.length() - 4);
-        } else {
+        } else
+        {
             base_file = infileloc;
             infileloc += ".eu4";
         }
         outfileloc = base_file + "_cleaned.eu4";
         ifstream infile(infileloc.c_str());
-        if (infile) {
+        if (infile)
+        {
             cout << "file file file : " << savelines.size() << endl;
 
             cout << "Importing savefile: " << infileloc << endl;
             string s;
-            while (!infile.eof()) {
+            while (!infile.eof())
+            {
                 getline(infile, s);
                 savelines.push_back(s);
                 //cout << "file file file : " << savelines.size() << endl;
@@ -233,7 +295,8 @@ bool handle_user_input(CleanConfig &clean_config, string &msg, string &d, string
             cout << "Imported " << savelines.size() << " lines." << endl;
 
             return true;
-        } else {
+        } else
+        {
             msg = "Error: unable to open file: " + infileloc;
             cout << "Unable to open file wtf" << endl;
         }
@@ -242,57 +305,75 @@ bool handle_user_input(CleanConfig &clean_config, string &msg, string &d, string
 }
 
 void clean_invalid_tags(vector<string> &savelines, CleanConfig clean_config, int &lines_removed_1, int &lines_removed_2,
-                        int &lines_removed_3, int &references_removed_1) {
+                        int &lines_removed_3, int &references_removed_1)
+{
     cout << "Checking provinces for valid tags.\n";
     bool get_cores = false;
     set<string> valid_tags;
-    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i) {
+    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i)
+    {
         string line = *i;
-        if (get_cores) {
+        if (get_cores)
+        {
             string cores = line.substr(3);
-            while (cores.length() > 2) {
+            while (cores.length() > 2)
+            {
                 string core = cores.substr(0, 3);
-                if (core.substr(0, 1) == "\"") {
+                if (core.substr(0, 1) == "\"")
+                {
                     core = cores.substr(1, 3);
                     cores = cores.substr(5);
-                } else { cores = cores.substr(4); }
-                if (valid_tags.find(core) == valid_tags.end()) { valid_tags.insert(core); }
+                } else
+                { cores = cores.substr(4); }
+                if (valid_tags.find(core) == valid_tags.end())
+                { valid_tags.insert(core); }
             }
             get_cores = false;
-        } else if (line == "\t\tcores={") { get_cores = true; }
+        } else if (line == "\t\tcores={")
+        { get_cores = true; }
     }
 
     cout << "Checking rebel factions for valid tags.\n";
-    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i) {
+    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i)
+    {
         string line = *i;
-        if (line.substr(0, 14) == "\tindependence=") {
+        if (line.substr(0, 14) == "\tindependence=")
+        {
             string tag = line.substr(15, 3);
-            if (valid_tags.find(tag) == valid_tags.end()) { valid_tags.insert(tag); }
+            if (valid_tags.find(tag) == valid_tags.end())
+            { valid_tags.insert(tag); }
         }
     }
 
     cout << "Identified " << valid_tags.size() << " valid tags.\n";
 
-    if (clean_config.verbose) {
+    if (clean_config.verbose)
+    {
         cout << "Valid tags:\n";
-        for (const auto &valid_tag : valid_tags) { cout << valid_tag << "\t"; }
+        for (const auto &valid_tag : valid_tags)
+        { cout << valid_tag << "\t"; }
         cout << "\n";
     }
 
     cout << "Searching for removed cores.\n";
     set<string> removed_cores;
-    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i) {
+    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i)
+    {
         string line = *i;
-        if (line.substr(0, 17) == "\t\t\t\tremove_core=\"") {
+        if (line.substr(0, 17) == "\t\t\t\tremove_core=\"")
+        {
             string tag = line.substr(17, 3);
-            if (removed_cores.find(tag) != removed_cores.end()) { continue; }
+            if (removed_cores.find(tag) != removed_cores.end())
+            { continue; }
             removed_cores.insert(tag);
         }
     }
 
-    if (clean_config.verbose) {
+    if (clean_config.verbose)
+    {
         cout << "Removed cores:\n";
-        for (const auto &removed_core : removed_cores) { cout << removed_core << "\t"; }
+        for (const auto &removed_core : removed_cores)
+        { cout << removed_core << "\t"; }
         cout << "\n";
     }
 
@@ -304,22 +385,30 @@ void clean_invalid_tags(vector<string> &savelines, CleanConfig clean_config, int
 
     cout << "Searching for invalid tags.\n";
     set<string> invalid_tags;
-    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i) {
+    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i)
+    {
         string line = *i;
-        if (line.length() > 4 && line.substr(0, 1) == "\t" && line.substr(1, 1) != "\t" && line.substr(4) == "={") {
+        if (line.length() > 4 && line.substr(0, 1) == "\t" && line.substr(1, 1) != "\t" && line.substr(4) == "={")
+        {
             string tag = line.substr(1, 3);
-            if (valid_tags.find(tag) != valid_tags.end()) { continue; }
-            if (exceptions.find(tag) != exceptions.end()) { continue; }
-            if (removed_cores.find(tag) == removed_cores.end()) { continue; }
-            if (isdigit(tag.at(1))) { continue; }
+            if (valid_tags.find(tag) != valid_tags.end())
+            { continue; }
+            if (exceptions.find(tag) != exceptions.end())
+            { continue; }
+            if (removed_cores.find(tag) == removed_cores.end())
+            { continue; }
+            if (isdigit(tag.at(1)))
+            { continue; }
             invalid_tags.insert(tag);
         }
     }
     cout << "Identified " << invalid_tags.size() << " invalid tags.\n";
 
-    if (clean_config.verbose) {
+    if (clean_config.verbose)
+    {
         cout << "Invalid tags:\n";
-        for (const auto &invalid_tag : invalid_tags) { cout << invalid_tag << "\t"; }
+        for (const auto &invalid_tag : invalid_tags)
+        { cout << invalid_tag << "\t"; }
         cout << "\n";
     }
 
@@ -327,48 +416,62 @@ void clean_invalid_tags(vector<string> &savelines, CleanConfig clean_config, int
     vector<string> purged_save;
     bool purge_nation = false;
     bool purge_demand = false;
-    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i) {
+    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i)
+    {
         string line = *i;
-        if (purge_nation) {
-            if (line.substr(0, 2) == "\t}") {
+        if (purge_nation)
+        {
+            if (line.substr(0, 2) == "\t}")
+            {
                 purge_nation = false;
             }
             lines_removed_1++;
             continue;
         } else if (line.length() > 4 && line.substr(0, 1) == "\t" && line.substr(1, 1) != "\t" &&
-                   line.substr(4) == "={") {
+                   line.substr(4) == "={")
+        {
             string tag = line.substr(1, 3);
-            if (invalid_tags.find(tag) != invalid_tags.end()) {
+            if (invalid_tags.find(tag) != invalid_tags.end())
+            {
                 purge_nation = true;
                 lines_removed_1++;
                 continue;
             }
         }
-        if (purge_demand) {
-            if (line.substr(0, 3) == "\t\t}") {
+        if (purge_demand)
+        {
+            if (line.substr(0, 3) == "\t\t}")
+            {
                 purge_demand = false;
             }
             lines_removed_2++;
             continue;
         } else if (line.length() > 5 && line.substr(0, 2) == "\t\t" && line.substr(2, 1) != "\t" &&
-                   line.substr(5) == "={") {
+                   line.substr(5) == "={")
+        {
             string tag = line.substr(2, 3);
-            if (invalid_tags.find(tag) != invalid_tags.end()) {
+            if (invalid_tags.find(tag) != invalid_tags.end())
+            {
                 purge_demand = true;
                 lines_removed_2++;
                 continue;
             }
         }
-        if (line.substr(0, 19) == "\t\t\twinning_against_") {
+        if (line.substr(0, 19) == "\t\t\twinning_against_")
+        {
             string tag = line.substr(19, 3);
-            if (invalid_tags.find(tag) != invalid_tags.end()) {
+            if (invalid_tags.find(tag) != invalid_tags.end())
+            {
                 lines_removed_3++;
                 continue;
             }
-        } else if (line.substr(0, 17) == "\t\tdiscovered_by={") {
-            for (const auto &invalid_tag : invalid_tags) {
+        } else if (line.substr(0, 17) == "\t\tdiscovered_by={")
+        {
+            for (const auto &invalid_tag : invalid_tags)
+            {
                 int k = line.find(invalid_tag);
-                if (k != std::string::npos) {
+                if (k != std::string::npos)
+                {
                     line.erase(k, 4);
                     references_removed_1++;
                 }
@@ -379,18 +482,23 @@ void clean_invalid_tags(vector<string> &savelines, CleanConfig clean_config, int
     savelines = purged_save;
 }
 
-void clean_wars(vector<string> &savelines, int &lines_removed_4) {
+void clean_wars(vector<string> &savelines, int &lines_removed_4)
+{
     cout << "Purging concluded wars: ";
     int removed = 0;
     bool purge_war = false;
     vector<string> purged_save;
-    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i) {
+    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i)
+    {
         string line = *i;
-        if (purge_war) {
-            if (line.substr(0, 1) == "}") { purge_war = false; }
+        if (purge_war)
+        {
+            if (line.substr(0, 1) == "}")
+            { purge_war = false; }
             lines_removed_4++;
             continue;
-        } else if (line.length() == 14 && line.substr(0, 14) == "previous_war={") {
+        } else if (line.length() == 14 && line.substr(0, 14) == "previous_war={")
+        {
             purge_war = true;
             removed++;
             lines_removed_4++;
@@ -402,30 +510,40 @@ void clean_wars(vector<string> &savelines, int &lines_removed_4) {
     cout << removed << " deleted\n";
 }
 
-void clean_province_history(vector<string> &savelines, int &lines_removed_5) {
+void clean_province_history(vector<string> &savelines, int &lines_removed_5)
+{
     cout << "Consolidating province histories: ";
     int removed = 0;
     vector<string> purged_save;
-    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i) {
+    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i)
+    {
         string line = *i;
         bool strip_line = false;
-        if (line.substr(0, 4) == "\t\t\t\t") {
-            if (line.substr(0, 13) == "\t\t\t\tbase_tax=") { strip_line = true; }
-            else if (line.substr(0, 18) == "\t\t\t\tbase_manpower=") { strip_line = true; }
-            else if (line.substr(0, 18) == "\t\t\t\tdiscovered_by=") { strip_line = true; }
-            else if (line.substr(0, 20) == "\t\t\t\tbase_production=") { strip_line = true; }
-            if (strip_line) {
+        if (line.substr(0, 4) == "\t\t\t\t")
+        {
+            if (line.substr(0, 13) == "\t\t\t\tbase_tax=")
+            { strip_line = true; }
+            else if (line.substr(0, 18) == "\t\t\t\tbase_manpower=")
+            { strip_line = true; }
+            else if (line.substr(0, 18) == "\t\t\t\tdiscovered_by=")
+            { strip_line = true; }
+            else if (line.substr(0, 20) == "\t\t\t\tbase_production=")
+            { strip_line = true; }
+            if (strip_line)
+            {
                 removed++;
                 string prev_line = purged_save.back();
                 i++;
                 string next_line = *i;
                 i--;
-                if (prev_line.substr(0, 3) == "\t\t\t" && isdigit(prev_line[3]) && next_line == "\t\t\t}") {
+                if (prev_line.substr(0, 3) == "\t\t\t" && isdigit(prev_line[3]) && next_line == "\t\t\t}")
+                {
                     purged_save.pop_back();
                     lines_removed_5 += 3;
                     i++;
                     continue;
-                } else {
+                } else
+                {
                     lines_removed_5++;
                     continue;
                 }
@@ -437,35 +555,50 @@ void clean_province_history(vector<string> &savelines, int &lines_removed_5) {
     cout << removed << " deleted" << endl;
 }
 
-void clean_province_history2(vector<string> &savelines, int &lines_removed_10) {
+void clean_province_history2(vector<string> &savelines, int &lines_removed_10)
+{
     cout << "Consolidating province histories #2: ";
     int removed = 0;
     vector<string> purged_save;
-    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i) {
+    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i)
+    {
         string line = *i;
-        if (line.substr(0, 4) == "\t\t\t\t") {
+        if (line.substr(0, 4) == "\t\t\t\t")
+        {
             bool strip_line = false;
-            if (line == "\t\t\t\tis_city==yes") { strip_line = true; }
-            else if (line.substr(0, 11) == "\t\t\t\tunrest=") { strip_line = true; }
-            else if (line.substr(0, 12) == "\t\t\t\tculture=") { strip_line = true; }
-            else if (line.substr(0, 13) == "\t\t\t\treligion=") { strip_line = true; }
-            else if (line.substr(0, 16) == "\t\t\t\ttrade_goods=") { strip_line = true; }
-            else if (line.substr(0, 16) == "\t\t\t\tnative_size=") { strip_line = true; }
-            else if (line.substr(0, 20) == "\t\t\t\tnative_ferocity=") { strip_line = true; }
-            else if (line.substr(0, 22) == "\t\t\t\tset_province_flag=") { strip_line = true; }
-            else if (line.substr(0, 23) == "\t\t\t\tnative_hostileness=") { strip_line = true; }
-            if (strip_line) {
+            if (line == "\t\t\t\tis_city==yes")
+            { strip_line = true; }
+            else if (line.substr(0, 11) == "\t\t\t\tunrest=")
+            { strip_line = true; }
+            else if (line.substr(0, 12) == "\t\t\t\tculture=")
+            { strip_line = true; }
+            else if (line.substr(0, 13) == "\t\t\t\treligion=")
+            { strip_line = true; }
+            else if (line.substr(0, 16) == "\t\t\t\ttrade_goods=")
+            { strip_line = true; }
+            else if (line.substr(0, 16) == "\t\t\t\tnative_size=")
+            { strip_line = true; }
+            else if (line.substr(0, 20) == "\t\t\t\tnative_ferocity=")
+            { strip_line = true; }
+            else if (line.substr(0, 22) == "\t\t\t\tset_province_flag=")
+            { strip_line = true; }
+            else if (line.substr(0, 23) == "\t\t\t\tnative_hostileness=")
+            { strip_line = true; }
+            if (strip_line)
+            {
                 removed++;
                 string prev_line = purged_save.back();
                 i++;
                 string next_line = *i;
                 i--;
-                if (prev_line.substr(0, 3) == "\t\t\t" && isdigit(prev_line[3]) && next_line == "\t\t\t}") {
+                if (prev_line.substr(0, 3) == "\t\t\t" && isdigit(prev_line[3]) && next_line == "\t\t\t}")
+                {
                     purged_save.pop_back();
                     lines_removed_10 += 3;
                     i++;
                     continue;
-                } else {
+                } else
+                {
                     lines_removed_10++;
                     continue;
                 }
@@ -477,7 +610,8 @@ void clean_province_history2(vector<string> &savelines, int &lines_removed_10) {
     cout << removed << " deleted" << endl;
 }
 
-void clean_decisions(vector<string> &savelines, int &lines_removed_6) {
+void clean_decisions(vector<string> &savelines, int &lines_removed_6)
+{
     cout << "Removing decision spam records: ";
     int removed = 0;
     cout << savelines[0] << endl;
@@ -522,30 +656,37 @@ void clean_decisions(vector<string> &savelines, int &lines_removed_6) {
     to_strip.emplace_back("\t\t\t\tdecision=\"subject_integration\"");
     to_strip.emplace_back("\t\t\t\tdecision=\"subject_subjugation\"");
     to_strip.emplace_back("\t\t\t\tdecision=\"weighing_ceremony_oriental_mod\"");
-    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i) {
+    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i)
+    {
         string line = *i;
-        if (line.substr(0, 4) == "\t\t\t\t") {
-            if (find(to_strip.begin(), to_strip.end(), line) != to_strip.end()) {
+        if (line.substr(0, 4) == "\t\t\t\t")
+        {
+            if (find(to_strip.begin(), to_strip.end(), line) != to_strip.end())
+            {
                 removed++;
                 string prev_line = purged_save.back();
                 i++;
                 string next_line = *i;
                 i--;
-                if (prev_line.substr(0, 3) == "\t\t\t" && isdigit(prev_line[3]) && next_line == "\t\t\t}") {
+                if (prev_line.substr(0, 3) == "\t\t\t" && isdigit(prev_line[3]) && next_line == "\t\t\t}")
+                {
                     purged_save.pop_back();
                     lines_removed_6 += 3;
                     i++;
                     continue;
-                } else {
+                } else
+                {
                     lines_removed_6++;
                     continue;
                 }
             }
-        } else if (line == "\t\t\tinteraction_use={") {
+        } else if (line == "\t\t\tinteraction_use={")
+        {
             i += 2;
             int test_year = atoi(((*i).substr(9, 13)).c_str());
             i -= 2;
-            if (current_year > test_year + 10) {
+            if (current_year > test_year + 10)
+            {
                 lines_removed_6 += 4;
                 removed++;
                 i += 3;
@@ -558,7 +699,8 @@ void clean_decisions(vector<string> &savelines, int &lines_removed_6) {
     cout << removed << " deleted" << endl;
 }
 
-void clean_buildings(vector<string> &savelines, int &lines_removed_8) {
+void clean_buildings(vector<string> &savelines, int &lines_removed_8)
+{
     cout << "Removing building history records: ";
 
     int removed = 0;
@@ -736,21 +878,26 @@ void clean_buildings(vector<string> &savelines, int &lines_removed_8) {
     to_strip.emplace_back("\t\t\t\tnational_capital_5=yes");
     to_strip.emplace_back("\t\t\t\tnational_capital_5=no");
 
-    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i) {
+    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i)
+    {
         string line = *i;
-        if (line.substr(0, 4) == "\t\t\t\t") {
-            if (find(to_strip.begin(), to_strip.end(), line) != to_strip.end()) {
+        if (line.substr(0, 4) == "\t\t\t\t")
+        {
+            if (find(to_strip.begin(), to_strip.end(), line) != to_strip.end())
+            {
                 string prev_line = purged_save.back();
                 i++;
                 string next_line = *i;
                 i--;
                 removed++;
-                if (prev_line.substr(0, 3) == "\t\t\t" && isdigit(prev_line[3]) && next_line == "\t\t\t}") {
+                if (prev_line.substr(0, 3) == "\t\t\t" && isdigit(prev_line[3]) && next_line == "\t\t\t}")
+                {
                     purged_save.pop_back();
                     lines_removed_8 += 3;
                     i++;
                     continue;
-                } else {
+                } else
+                {
                     lines_removed_8++;
                     continue;
                 }
@@ -762,13 +909,16 @@ void clean_buildings(vector<string> &savelines, int &lines_removed_8) {
     cout << removed << " deleted" << endl;
 }
 
-void clean_occupations(vector<string> &savelines, int &lines_removed_9) {
+void clean_occupations(vector<string> &savelines, int &lines_removed_9)
+{
     cout << "Purging occupation history: ";
     int removed = 0;
     vector<string> purged_save;
-    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i) {
+    for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i)
+    {
         string line = *i;
-        if (line == "\t\t\t\tcontroller={") {
+        if (line == "\t\t\t\tcontroller={")
+        {
             string prev_line = purged_save.back();
             i += 2;
             string test1 = *i;
@@ -777,15 +927,18 @@ void clean_occupations(vector<string> &savelines, int &lines_removed_9) {
             i++;
             string test3 = *i;
             i -= 4;
-            if (prev_line.substr(0, 3) == "\t\t\t" && isdigit(prev_line[3])) {
-                if (test1 == "\t\t\t\t}" && test2 == "\t\t\t}") {
+            if (prev_line.substr(0, 3) == "\t\t\t" && isdigit(prev_line[3]))
+            {
+                if (test1 == "\t\t\t\t}" && test2 == "\t\t\t}")
+                {
                     purged_save.pop_back();
                     lines_removed_9 += 5;
                     removed++;
                     i += 3;
                     continue;
                 }
-                if (test2 == "\t\t\t\t}" && test3 == "\t\t\t}") {
+                if (test2 == "\t\t\t\t}" && test3 == "\t\t\t}")
+                {
                     purged_save.pop_back();
                     lines_removed_9 += 6;
                     removed++;
@@ -793,33 +946,40 @@ void clean_occupations(vector<string> &savelines, int &lines_removed_9) {
                     continue;
                 }
             }
-            if (test1 == "\t\t\t\t}") {
+            if (test1 == "\t\t\t\t}")
+            {
                 lines_removed_9 += 3;
                 removed++;
                 i += 2;
                 continue;
             }
-            if (test2 == "\t\t\t\t}") {
+            if (test2 == "\t\t\t\t}")
+            {
                 lines_removed_9 += 4;
                 removed++;
                 i += 3;
                 continue;
             }
-        } else {
+        } else
+        {
             bool strip_line = false;
-            if (line.substr(0, 15) == "\t\t\t\tfake_owner=") { strip_line = true; }
-            if (strip_line) {
+            if (line.substr(0, 15) == "\t\t\t\tfake_owner=")
+            { strip_line = true; }
+            if (strip_line)
+            {
                 removed++;
                 string prev_line = purged_save.back();
                 i++;
                 string next_line = *i;
                 i--;
-                if (prev_line.substr(0, 3) == "\t\t\t" && isdigit(prev_line[3]) && next_line == "\t\t\t}") {
+                if (prev_line.substr(0, 3) == "\t\t\t" && isdigit(prev_line[3]) && next_line == "\t\t\t}")
+                {
                     purged_save.pop_back();
                     lines_removed_9 += 3;
                     i++;
                     continue;
-                } else {
+                } else
+                {
                     lines_removed_9++;
                     continue;
                 }
@@ -831,7 +991,8 @@ void clean_occupations(vector<string> &savelines, int &lines_removed_9) {
     cout << removed << " deleted" << endl;
 }
 
-void clean_rulers(vector<string> &savelines, int &lines_removed_11) {
+void clean_rulers(vector<string> &savelines, int &lines_removed_11)
+{
     cout << "Scanning for active rulers: ";
     set<string> valid_rulers;
     Scan_IDs(savelines, valid_rulers, "\t\tmonarch={");
@@ -842,11 +1003,14 @@ void clean_rulers(vector<string> &savelines, int &lines_removed_11) {
     Strip_Deceased(savelines, valid_rulers, "\t\t\t\tmonarch={", removed, lines_removed_11);
     Strip_Deceased(savelines, valid_rulers, "\t\t\t\tmonarch_heir={", removed, lines_removed_11);
     Strip_Deceased(savelines, valid_rulers, "\t\t\t\tmonarch_consort={", removed, lines_removed_11);
-    if (removed) {
+    if (removed)
+    {
         vector<string> purged_save;
-        for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i) {
+        for (vector<string>::const_iterator i = savelines.begin(); i != savelines.end(); ++i)
+        {
             string line = *i;
-            if (line == "\t\tprevious_monarch={") {
+            if (line == "\t\tprevious_monarch={")
+            {
                 lines_removed_11 += 4;
                 i += 3;
                 continue;
@@ -858,7 +1022,8 @@ void clean_rulers(vector<string> &savelines, int &lines_removed_11) {
     cout << removed << " deleted" << endl;
 }
 
-void clean_heirs(vector<string> &savelines, int &lines_removed_12) {
+void clean_heirs(vector<string> &savelines, int &lines_removed_12)
+{
     cout << "Scanning for active heirs: ";
     set<string> valid_heirs;
     Scan_IDs(savelines, valid_heirs, "\t\their={");
@@ -880,7 +1045,8 @@ void clean_heirs(vector<string> &savelines, int &lines_removed_12) {
     cout << removed << " deleted" << endl;
 }
 
-void clean_advisors(vector<string> &savelines, int &lines_removed_7) {
+void clean_advisors(vector<string> &savelines, int &lines_removed_7)
+{
     cout << "Scanning for active advisors: ";
     set<string> valid_advisors;
     Scan_IDs(savelines, valid_advisors, "\t\tadvisor={");
@@ -892,7 +1058,8 @@ void clean_advisors(vector<string> &savelines, int &lines_removed_7) {
     cout << removed << " deleted" << endl;
 }
 
-void clean_leaders(vector<string> &savelines, int &lines_removed_13) {
+void clean_leaders(vector<string> &savelines, int &lines_removed_13)
+{
     cout << "Scanning for active leaders: ";
     set<string> valid_leaders;
     Scan_IDs(savelines, valid_leaders, "\t\tleader={");
@@ -910,7 +1077,8 @@ void clean_leaders(vector<string> &savelines, int &lines_removed_13) {
  * @param clean_config
  * @return true if a save was cleaned, false if just the config was changed
  */
-bool clean(const string &input, CleanConfig &clean_config) {
+bool clean(const string &input, CleanConfig &clean_config)
+{
 
     string outfileloc;
     vector<string> savelines;
@@ -920,7 +1088,8 @@ bool clean(const string &input, CleanConfig &clean_config) {
     cout << "EU Clean (version 9)";
     cout << "\nby Gakumerasara\n\n";
 
-    if (use_defaults) {
+    if (use_defaults)
+    {
         clean_config.verbose = true;
         clean_config.clean_invalid_tags = false;
         clean_config.clean_wars = false;
@@ -935,13 +1104,17 @@ bool clean(const string &input, CleanConfig &clean_config) {
         clean_config.clean_leaders = true;
 
         ifstream infile("input.eu4");
-        if (infile) {
+        if (infile)
+        {
             cout << "Importing savefile: input.eu4\n";
             string s;
-            while (getline(infile, s)) { savelines.push_back(s); }
+            while (getline(infile, s))
+            { savelines.push_back(s); }
             infile.close();
-        } else { cout << "\nError: unable to open file: input.eu4"; }
-    } else {
+        } else
+        { cout << "\nError: unable to open file: input.eu4"; }
+    } else
+    {
         cout << "\nThis program strips EU4 save files of the following:\n";
         string d;
         d += "\n1 - Invalid Tags";
@@ -976,7 +1149,8 @@ bool clean(const string &input, CleanConfig &clean_config) {
 
 
         string msg;
-        if (!handle_user_input(clean_config, msg, d, outfileloc, savelines, input)) {
+        if (!handle_user_input(clean_config, msg, d, outfileloc, savelines, input))
+        {
             return false;
         }
 
@@ -999,57 +1173,70 @@ bool clean(const string &input, CleanConfig &clean_config) {
     int references_removed_1 = 0;
     int savelength = savelines.size();
 
-    if (clean_config.clean_invalid_tags) {
+    if (clean_config.clean_invalid_tags)
+    {
         clean_invalid_tags(savelines, clean_config, lines_removed_country_def, lines_removed_trade_demands,
                            lines_removed_country_switches,
                            references_removed_1);
     }
 
-    if (clean_config.clean_wars) {
+    if (clean_config.clean_wars)
+    {
         clean_wars(savelines, lines_removed_concluded_war_h);
     }
 
-    if (clean_config.clean_province_history) {
+    if (clean_config.clean_province_history)
+    {
         clean_province_history(savelines, lines_removed_province_history);
     }
 
-    if (clean_config.clean_province_history2) {
+    if (clean_config.clean_province_history2)
+    {
         clean_province_history2(savelines, lines_removed_province_history2);
     }
 
-    if (clean_config.clean_decisions) {
+    if (clean_config.clean_decisions)
+    {
         clean_decisions(savelines, lines_removed_decisions);
     }
 
-    if (clean_config.clean_buildings) {
+    if (clean_config.clean_buildings)
+    {
         clean_buildings(savelines, lines_removed_buildings);
     }
 
-    if (clean_config.clean_occupations) {
+    if (clean_config.clean_occupations)
+    {
         clean_occupations(savelines, lines_removed_occupations);
     }
 
-    if (clean_config.clean_rulers) {
+    if (clean_config.clean_rulers)
+    {
         clean_rulers(savelines, lines_removed_rulers);
     }
 
-    if (clean_config.clean_heirs) {
+    if (clean_config.clean_heirs)
+    {
         clean_heirs(savelines, lines_removed_heirs);
     }
 
-    if (clean_config.clean_advisors) {
+    if (clean_config.clean_advisors)
+    {
         clean_advisors(savelines, lines_removed_advisors);
     }
 
-    if (clean_config.clean_leaders) {
+    if (clean_config.clean_leaders)
+    {
         clean_leaders(savelines, lines_removed_leaders);
     }
 
     cout << "Removed:\n";
-    if (clean_config.clean_invalid_tags) {
+    if (clean_config.clean_invalid_tags)
+    {
         cout << "\t" << references_removed_1 << "\treferences within province discovery\n";
     }
-    if (clean_config.clean_invalid_tags) {
+    if (clean_config.clean_invalid_tags)
+    {
         cout << "\t" << lines_removed_country_def << "\t(" << Percent_Removed(lines_removed_country_def, savelength)
              << "%) lines of country definition/history\n";
         cout << "\t" << lines_removed_trade_demands << "\t(" << Percent_Removed(lines_removed_trade_demands, savelength)
@@ -1058,46 +1245,56 @@ bool clean(const string &input, CleanConfig &clean_config) {
              << Percent_Removed(lines_removed_country_switches, savelength)
              << "%) lines of irrelevant country switches\n";
     }
-    if (clean_config.clean_wars) {
+    if (clean_config.clean_wars)
+    {
         cout << "\t" << lines_removed_concluded_war_h << "\t("
              << Percent_Removed(lines_removed_concluded_war_h, savelength)
              << "%) lines of concluded war history\n";
     }
-    if (clean_config.clean_province_history) {
+    if (clean_config.clean_province_history)
+    {
         cout << "\t" << lines_removed_province_history << "\t("
              << Percent_Removed(lines_removed_province_history, savelength)
              << "%) lines of redundant province history" << endl;
     }
-    if (clean_config.clean_province_history2) {
+    if (clean_config.clean_province_history2)
+    {
         cout << "\t" << lines_removed_province_history2 << "\t("
              << Percent_Removed(lines_removed_province_history2, savelength)
              << "%) lines of additional province history\n";
     }
-    if (clean_config.clean_occupations) {
+    if (clean_config.clean_occupations)
+    {
         cout << "\t" << lines_removed_occupations << "\t(" << Percent_Removed(lines_removed_occupations, savelength)
              << "%) lines of occupation history\n";
     }
-    if (clean_config.clean_buildings) {
+    if (clean_config.clean_buildings)
+    {
         cout << "\t" << lines_removed_buildings << "\t(" << Percent_Removed(lines_removed_buildings, savelength)
              << "%) lines of building history\n";
     }
-    if (clean_config.clean_decisions) {
+    if (clean_config.clean_decisions)
+    {
         cout << "\t" << lines_removed_decisions << "\t(" << Percent_Removed(lines_removed_decisions, savelength)
              << "%) lines of decision spam history\n";
     }
-    if (clean_config.clean_rulers) {
+    if (clean_config.clean_rulers)
+    {
         cout << "\t" << lines_removed_rulers << "\t(" << Percent_Removed(lines_removed_rulers, savelength)
              << "%) lines of dead ruler records\n";
     }
-    if (clean_config.clean_heirs) {
+    if (clean_config.clean_heirs)
+    {
         cout << "\t" << lines_removed_heirs << "\t(" << Percent_Removed(lines_removed_heirs, savelength)
              << "%) lines of dead heir/consort records\n";
     }
-    if (clean_config.clean_advisors) {
+    if (clean_config.clean_advisors)
+    {
         cout << "\t" << lines_removed_advisors << "\t(" << Percent_Removed(lines_removed_advisors, savelength)
              << "%) lines of dead advisor records\n";
     }
-    if (clean_config.clean_leaders) {
+    if (clean_config.clean_leaders)
+    {
         cout << "\t" << lines_removed_leaders << "\t(" << Percent_Removed(lines_removed_leaders, savelength)
              << "%) lines of dead leader records\n";
     }

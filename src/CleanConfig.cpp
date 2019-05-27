@@ -6,7 +6,8 @@
 #include <fstream>
 #include "CleanConfig.h"
 
-CleanConfig::CleanConfig() {
+CleanConfig::CleanConfig()
+{
     use_defaults = false;    //for ultra-fast testing purposes
     verbose = false;
     clean_invalid_tags = true;
@@ -22,14 +23,18 @@ CleanConfig::CleanConfig() {
     clean_leaders = true;
 }
 
-CleanConfig::CleanConfig(const string &cfg_loc) {
+CleanConfig::CleanConfig(const string &cfg_loc)
+{
     ifstream cfg(cfg_loc);
-    if (cfg) {
+    if (cfg)
+    {
         string s;
         vector<string> cfglines;
-        while (getline(cfg, s)) { cfglines.push_back(s); }
+        while (getline(cfg, s))
+        { cfglines.push_back(s); }
         cfg.close();
-        if (cfglines.size() == 12) {
+        if (cfglines.size() == 12)
+        {
             if (cfglines[0] != "0") verbose = true;
             if (cfglines[1] == "0") clean_invalid_tags = false;
             if (cfglines[2] != "0") clean_wars = true;
@@ -42,12 +47,14 @@ CleanConfig::CleanConfig(const string &cfg_loc) {
             if (cfglines[9] != "0") clean_rulers = true;
             if (cfglines[10] == "0") clean_heirs = false;
             if (cfglines[11] == "0") clean_leaders = false;
-        } else { cout << "\nwarning: ignoring corrupted configuration file \"EU Clean.cfg\""; }
+        } else
+        { cout << "\nwarning: ignoring corrupted configuration file \"EU Clean.cfg\""; }
     }
 
 }
 
-void CleanConfig::save_config(const string &cfg_loc) {
+void CleanConfig::save_config(const string &cfg_loc)
+{
     ofstream _c(cfg_loc);
     if (verbose) _c << "1";
     else _c << "0";

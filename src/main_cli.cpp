@@ -7,20 +7,25 @@
 #include <string>
 #include <unistd.h>
 #include <vector>
+
 using namespace std;
 
 #include "eu_clean_logic.h"
 #include "CleanConfig.h"
 
-void print_instructions(const CleanConfig &clean_config) {
+void print_instructions(const CleanConfig &clean_config)
+{
     cout << "\nverbose mode is currently: ";
-    if (clean_config.verbose) { cout << "on"; }
-    else { cout << "off"; }
+    if (clean_config.verbose)
+    { cout << "on"; }
+    else
+    { cout << "off"; }
     if (clean_config.clean_invalid_tags || clean_config.clean_wars || clean_config.clean_province_history ||
         clean_config.clean_decisions || clean_config.clean_advisors ||
         clean_config.clean_buildings || clean_config.clean_occupations ||
         clean_config.clean_province_history2 || clean_config.clean_rulers || clean_config.clean_heirs ||
-        clean_config.clean_leaders) {
+        clean_config.clean_leaders)
+    {
         cout << "\n\nwill be cleaned:";
     }
     if (clean_config.clean_invalid_tags) cout << "\n\t1 - Invalid Tags";
@@ -38,7 +43,8 @@ void print_instructions(const CleanConfig &clean_config) {
         !clean_config.clean_decisions || !clean_config.clean_advisors ||
         !clean_config.clean_buildings || !clean_config.clean_occupations ||
         !clean_config.clean_province_history2 || !clean_config.clean_rulers || !clean_config.clean_heirs ||
-        !clean_config.clean_leaders) {
+        !clean_config.clean_leaders)
+    {
         cout << "\nwill NOT be cleaned:";
     }
     if (!clean_config.clean_invalid_tags) cout << "\n\t1 - Invalid Tags";
@@ -55,12 +61,13 @@ void print_instructions(const CleanConfig &clean_config) {
     cout << "\n\nType a number and press Enter to toggle cleaning on/off.";
     cout << "\nType 'v' to toggle verbose mode on/off.";
     cout << "\nType 'd' to repeat the descriptions.";
-    cout << "\nType 'a' and press Enter to clean \"autosave.eu4\"";
-    cout << "\nType any other uncompressed EU4 savefile name and press Enter to clean it.";
+    cout << "\nType 'a' and press Enter to clean_ \"autosave.eu4\"";
+    cout << "\nType any other uncompressed EU4 savefile name and press Enter to clean_ it.";
     cout << "\n\n";
 }
 
-int main() {
+int main()
+{
     CleanConfig clean_cfg("EU Clean.cfg");
     string input;
     print_instructions(clean_cfg);

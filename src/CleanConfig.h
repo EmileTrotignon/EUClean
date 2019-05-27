@@ -9,7 +9,8 @@
 
 using namespace std;
 
-class CleanConfig {
+class CleanConfig
+{
 public:
     CleanConfig();
 
