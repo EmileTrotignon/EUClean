@@ -18,6 +18,7 @@ Q_OBJECT
 private:
 
     CleanConfig config;
+    string config_loc;
 
     QCheckBox *cb_verbose;
     QCheckBox *cb_clean_invalid_tags;
@@ -45,11 +46,13 @@ private:
 
 public:
 
-    explicit EUCleanCentralWidget(CleanConfig config_, QWidget *parent = nullptr);
+    explicit EUCleanCentralWidget(const string &config_loc, QWidget *parent = nullptr);
 
 private slots:
 
     void clean_();
+
+    void update_clean_button();
 };
 
 

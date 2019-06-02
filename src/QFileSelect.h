@@ -29,6 +29,12 @@ public :
 private slots:
 
     void browse();
+
+    void emit_file_changed();
+
+signals:
+
+    void file_changed();
 };
 
 

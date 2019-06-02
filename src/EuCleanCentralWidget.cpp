@@ -1,7 +1,9 @@
 #include <fstream>
 #include "EuCleanCentralWidget.h"
 
-EUCleanCentralWidget::EUCleanCentralWidget(CleanConfig config_, QWidget *parent) : QWidget(parent), config(config_)
+EUCleanCentralWidget::EUCleanCentralWidget(const string &config_loc_, QWidget *parent) : QWidget(parent),
+                                                                                         config(config_loc_),
+                                                                                         config_loc(config_loc_)
 {
     cb_verbose = new QCheckBox("Verbose mode", this);
     cb_clean_invalid_tags = new QCheckBox("Invalid tags", this);
@@ -22,6 +24,8 @@ EUCleanCentralWidget::EUCleanCentralWidget(CleanConfig config_, QWidget *parent)
     connect(pb_clean, SIGNAL(clicked()), this, SLOT(clean_()));
 
     file_select = new QFileSelect("");
+    connect(file_select, SIGNAL(file_changed()), this, SLOT(update_clean_button()));
+    update_clean_button();
 
     layout = new QVBoxLayout(this);
 
@@ -47,6 +51,7 @@ EUCleanCentralWidget::EUCleanCentralWidget(CleanConfig config_, QWidget *parent)
 void EUCleanCentralWidget::clean_()
 {
     set_config_to_checkbox_state();
+    config.save_config(config_loc);
     string loc = file_select->get_file();
     ifstream f(loc);
     if (f.good())
@@ -89,4 +94,19 @@ void EUCleanCentralWidget::set_checkbox_to_config()
     cb_clean_rulers->setChecked(config.clean_rulers);
     cb_clean_heirs->setChecked(config.clean_heirs);
     cb_clean_leaders->setChecked(config.clean_leaders);
+}
+
+void EUCleanCentralWidget::update_clean_button()
+{
+    string loc = file_select->get_file();
+    ifstream f(loc);
+    if (f.good())
+    {
+        pb_clean->setEnabled(true);
+    } else
+    {
+        pb_clean->setEnabled(false);
+        pb_clean->setToolTip("You must select an existing file");
+    }
+    f.close();
 }

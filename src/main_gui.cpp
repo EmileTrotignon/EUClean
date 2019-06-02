@@ -14,10 +14,10 @@ int main(int argc, char **argv)
     //GUIWindowMainMenu mainMenu;
     //mainMenu.show();
 
-    CleanConfig config("EU Clean.cfg");
+    //CleanConfig config("EU Clean.cfg");
 
     QMainWindow mw(nullptr);
-    EUCleanCentralWidget cw(config);
+    EUCleanCentralWidget cw("EU Clean.cfg");
     mw.setCentralWidget(&cw);
     mw.show();
 

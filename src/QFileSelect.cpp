@@ -4,6 +4,8 @@
 QFileSelect::QFileSelect(QWidget *parent) : QWidget(parent)
 {
     line_edit = new QLineEdit(this);
+    connect(line_edit, SIGNAL(textChanged(
+                                      const QString &)), this, SLOT(emit_file_changed()));
     button = new QPushButton("Browse");
     connect(button, SIGNAL(clicked()), this, SLOT(browse()));
     layout = new QHBoxLayout();
@@ -19,6 +21,7 @@ QFileSelect::QFileSelect(const string &default_loc, QWidget *parent) : QFileSele
 
 void QFileSelect::browse()
 {
+    QString old_loc = line_edit->text();
     QString file_loc = QFileDialog::getOpenFileName(this, tr("Pick save"), line_edit->text(), "EU4 saves (*.eu4)");
     line_edit->setText(file_loc);
 }
@@ -26,4 +29,9 @@ void QFileSelect::browse()
 string QFileSelect::get_file()
 {
     return line_edit->text().toStdString();
+}
+
+void QFileSelect::emit_file_changed()
+{
+    emit file_changed();
 }
